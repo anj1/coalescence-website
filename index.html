@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coalescence Labs</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=Geologica:wght@100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+
+    <!-- style>
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: block;
+
+            font-family: "Geologica", sans-serif;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0;
+            margin: 0 auto;
+            background: linear-gradient(to top, #8abfd8, #ffffff);
+        }
+
+        .hero {
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            max-width: 50%;
+
+            text-align: left;
+            align-items: flex-start;
+            font-family: "Geologica", sans-serif;
+        }
+
+        .hero>* {
+            margin-left: 5%;
+            /* This should match the approximate starting position of your first content section */
+        }
+
+        .hero h1 {
+            font-size: 64px;  /* Default large size */
+            font-size: min(64px, 5vw);  /* Scale down if 64px would be too large */
+            font-style: regular;
+            font-weight: bold;
+            color: #043964;
+            line-height: 1;
+        }
+
+        .hero p {
+            font-size: 24px;
+            font-size: min(24px, 2vw);
+            margin: 20px 0;
+            margin-left: 5%;
+            color: #555;
+        } 
+
+        .hero button {
+            padding: 12px 20px;
+            font-size: 20px;
+            font-size: min(20px, 1.6vw);
+            color: #fff;
+            background-color: #043964;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            /* add drop shadow */
+            /* box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.7); */
+        }
+    </style -->
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: "Geologica", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(to top, #8abfd8, #ffffff);
+        }
+
+        /* Hero section */
+        .hero {
+            position: relative;
+            width: 50%;
+            max-width: 600px;
+            padding: 2rem;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .hero>* {
+            margin: 0;
+            width: 100%;
+        }
+
+        .hero img {
+            width: 100%;
+            max-width: 128px;
+        }
+
+        .hero h1 {
+            color: #043964;
+            font-weight: bold;
+            line-height: 1.2;
+            font-size: clamp(2rem, 5vw + 1rem, 4rem);
+        }
+
+        .hero p {
+            color: #555;
+            font-size: clamp(1rem, 2vw + 0.5rem, 1.5rem);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero button {
+            width: auto;
+            padding: 0.75em 1.5em;
+            font-size: clamp(1rem, 1.5vw + 0.5rem, 1.25rem);
+            color: #fff;
+            background-color: #043964;
+            border: none;
+            border-radius: 2em;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .hero button:hover {
+            background-color: #0a4d7c;
+            transform: translateY(-2px);
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            .hero {
+                padding: 1.5rem;
+                text-align: left;
+            }
+
+            .hero h1 {
+                font-size: clamp(2.2rem, 4vw + 1.25rem, 3.125rem);
+                /* 25% larger */
+            }
+
+            .hero p {
+                font-size: clamp(1.1rem, 1.5vw + 0.625rem, 1.56rem);
+                /* 25% larger */
+            }
+
+            .hero button {
+                font-size: clamp(1.25rem, 1.5vw + 0.625rem, 1.56rem);
+                /* 25% larger */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .hero {
+                padding: 1rem;
+                margin-left: 15%;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+                min-height: calc(100vh - 4rem);
+            }
+
+            .hero h1 {
+                font-size: clamp(2.5rem, 4vw + 1.5rem, 3.5rem);
+                /* Even larger for very small screens */
+            }
+
+            .hero p {
+                font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.75rem);
+                /* Even larger for very small screens */
+            }
+
+            .hero button {
+                font-size: clamp(1.375rem, 1.5vw + 0.75rem, 1.75rem);
+                /* Even larger for very small screens */
+            }
+        }
+
+
+
+        /* Transition classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Contact form styles */
+        .contact-form {
+            position: relative;
+            width: 50%;
+            max-width: 600px;
+            padding: 2rem;
+            margin: 0 auto;
+            text-align: center;
+            transform: scale(0.95);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #043964;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #0a4d7c;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            color: #043964;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .form-header p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #043964;
+            box-shadow: 0 0 0 2px rgba(4, 57, 100, 0.1);
+        }
+
+        .submit-button {
+            margin: 0 auto;  /* Add this */
+            max-width: fit-content;  /* Add this */
+            width: auto;  /* Change this from width: 100% */
+
+            line-height: 1;  /* Add this to prevent any extra space from line height */
+            padding-top: 0.875rem;  /* Slightly adjust top padding */
+            padding-bottom: 0.875rem;  /* Slightly adjust bottom padding */
+
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1.0rem 1.5rem;
+            background-color: #043964;
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            
+        }
+
+        
+        .submit-button:hover {
+            background-color: #0a4d7c;
+            transform: translateY(-2px);
+        }
+
+        /* Add transition to hero section */
+        .hero {
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            .contact-form {
+                width: 80%;
+                padding: 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .contact-form {
+                width: 90%;
+                padding: 1rem;
+                margin-left: 5%;
+            }
+
+            .form-header h2 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="hexCanvas"></canvas>
+
+    <!--
+    <img id="ball" src="image/ball.png" alt="ball">
+    <img id="ball2" src="image/ball.png" alt="ball">
+    -->
+
+    <section id="heroSection" class="hero">
+        <img src="image/logo.svg" alt="Coalescence Labs Logo" />
+        <h1>Coalescence<br />Labs</h1>
+        <p>We're building the future of biosensors.</p>
+        <p>Coming soon!</p>
+        <button>Get in Touch</button>
+    </section>
+
+    <script src="js/hexGrid.js"></script>
+    <!-- script src="js/brownian.js"></script -->
+    <script src="js/contact-transition.js"></script>
+</body>
+
+</html>
