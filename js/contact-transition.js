@@ -75,11 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = {
             name: form.name.value,
             email: form.email.value,
+            subject: "Contact Form Submission",
             message: form.message.value
         };
         
         // Send form data as REST API request
-        fetch('https://coalescencelab.com/api/contact', {
+        fetch('https://contact-form-worker.coalescencelab.com/api/contact', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
