@@ -1,0 +1,16 @@
+name = "contact-form-worker"
+main = "contact-worker.js"  # adjust this path to where your worker code is located
+
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Enable the Email Workers API
+send_email = [{ name = "SEB", destination_address="alireza.n.j@gmail.com" }]
+
+[vars]
+# Add any environment variables here if needed
+
+# Email Workers binding
+[[env.production.bindings]]
+name = "SEB"  # This should match what you use in your worker code
+type = "send_email"

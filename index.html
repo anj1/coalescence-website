@@ -105,16 +105,18 @@
 
         /* Hero section */
         .hero {
+            
             position: relative;
-            width: 50%;
-            max-width: 600px;
+            width: 80%;
+            max-width: 480px;
             padding: 2rem;
             margin: 0 auto;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.5rem; 
+            transition: all 0.5s ease-in-out;
         }
 
         .hero>* {
@@ -162,7 +164,6 @@
         @media screen and (max-width: 768px) {
             .hero {
                 padding: 1.5rem;
-                text-align: left;
             }
 
             .hero h1 {
@@ -184,14 +185,6 @@
         @media screen and (max-width: 480px) {
             body {
                 overflow-y: auto;
-            }
-
-            .hero {
-                padding: 1rem;
-                margin-left: 15%;
-                margin-top: 2rem;
-                margin-bottom: 2rem;
-                min-height: calc(100vh - 4rem);
             }
 
             .hero h1 {
@@ -331,11 +324,6 @@
             transform: translateY(-2px);
         }
 
-        /* Add transition to hero section */
-        .hero {
-            transition: all 0.5s ease-in-out;
-        }
-
         /* Media Queries */
         @media screen and (max-width: 768px) {
             .contact-form {
@@ -346,7 +334,8 @@
 
         @media screen and (max-width: 480px) {
             .contact-form {
-                width: 90%;
+                width: 75%;
+                /* max-width: 300px; */
                 padding: 1rem;
                 margin-left: 5%;
             }
