@@ -132,6 +132,7 @@ function calcGridSize(center, windowRect, v1, v2) {
 
 function createGrid(frameCount, center, windowRect, excludeRect) {
     const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+    var screenFilled = false;
 
     function generateNoise(x, y, scale = 0.1) {
         const X = x * scale;
@@ -146,18 +147,24 @@ function createGrid(frameCount, center, windowRect, excludeRect) {
 
     const gridSize = calcGridSize(center, windowRect, a1, a2);
 
+    const windowDiagonal = Math.sqrt(windowRect.width * windowRect.width + windowRect.height * windowRect.height);
+    const screenFilledFrameCount = 0.6 * windowDiagonal / 32;
+    if ((frameCount > screenFilledFrameCount) || (frameCount > 64)){
+        screenFilled = true;
+    }
+
     for (let n = -gridSize.n; n <= gridSize.n; n++) {
         for (let m = -gridSize.m; m <= gridSize.m; m++) {
-            const x = center.x + n * a1.x + m * a2.x;
-            const y = center.y + n * a1.y + m * a2.y;
-
-            const dx = x - center.x;
-            const dy = y - center.y;
+            const dx = n * a1.x + m * a2.x;
+            const dy = n * a1.y + m * a2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance > 32*frameCount){
                 continue;
             }
+
+            const x = dx + center.x;
+            const y = dy + center.y;
 
             //const probabilityMod = 0.6 - Math.sin(frameCount / 100) * 0.5;
             const probability = Math.exp(-Math.pow(distance, 1) / (maxRadius * 0.9));
@@ -167,11 +174,11 @@ function createGrid(frameCount, center, windowRect, excludeRect) {
             const excludeRectSize = 0.5 * Math.min(excludeRect.width, excludeRect.height);
             const normdDist = dist < excludeRectSize ? dist / excludeRectSize : 1.0;
 
-            //console.log(hashFromPosition(n, m), normdDist, probability);
 
             if(x > 0 && x < canvas.width && y > 0 && y < canvas.height) {
                 if ((hashFromPosition(n, m) < (normdDist * probability))) {
-                    const noise = generateNoise(x, y + frameCount);
+                    const noise = generateNoise(x, screenFilled ? y + frameCount-screenFilledFrameCount-1 : y);
+
                     //const noise = generateNoise(x, y);
                     const tileType = noise > 0 ? 'sw' : 'lw';
 
@@ -182,16 +189,20 @@ function createGrid(frameCount, center, windowRect, excludeRect) {
                         // Calculate blur based on y-distance from center
                         blur: (y - center.y) / (canvas.height * 0.25)
                     });
+
                 }
-            }
+            } 
+
         }
     }
+
+
 
     const blurTop = -center.y / (canvas.height * 0.25);
     const blurBottom = (canvas.height - center.y) / (canvas.height * 0.25);
     const maxBlur = Math.max(Math.abs(blurTop), Math.abs(blurBottom));
 
-    return [positions, maxBlur];
+    return [positions, maxBlur, screenFilled];
 }
 
 function scaleRect(rect, scale) {
@@ -239,7 +250,7 @@ function drawTiles() {
         height: canvas.height
     };
 
-    [positions, maxBlur] = createGrid(frameCount, center, scaleRect(windowRect, 1/scaleFactor), scaleRect(heroRect, 1/scaleFactor));
+    [positions, maxBlur, screenFilled] = createGrid(frameCount, center, scaleRect(windowRect, 1/scaleFactor), scaleRect(heroRect, 1/scaleFactor));
       
     positions.sort((a, b) => a.y - b.y);
 
@@ -282,13 +293,16 @@ function drawTiles() {
                 ctx.drawImage(img2, px, py, size_x, size_y);
             });
         });
+        console.log("screenFilled: ", screenFilled);
+
+    return screenFilled;
 }
 
 function drawTileAnimation() {
-    drawTiles();
+    screenFilled = drawTiles();
     frameCount++;
 
-    if (frameCount < 100) {
+    if (!screenFilled){ 
         setTimeout(() => requestAnimationFrame(drawTileAnimation), 25);
     } else {
         setTimeout(() => requestAnimationFrame(drawTileAnimation), 2000);
